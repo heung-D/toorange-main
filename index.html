@@ -3,409 +3,1358 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-orange 회원용 대시보드</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <title>To-orange - 수감 전부터 사회복귀까지</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
-    body { font-family: 'Noto Sans KR', sans-serif; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --orange-500: #FF6B35;
+      --amber-500: #F59E0B;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+      --gray-800: #1F2937;
+      --gray-900: #111827;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+      background: #fff;
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+    
     .gradient-text {
-      background: linear-gradient(to right, #ea580c, #f97316);
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .orbit-item {
-      transition: all 0.05s linear;
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+    }
+    
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+      box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: #fff;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--orange-500);
+      color: var(--orange-500);
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--gray-600);
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover { color: var(--orange-500); }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .nav-right .login {
+      color: var(--gray-600);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    
+    .nav-right .start {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+    }
+    
+    .hero-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-tag {
+      color: var(--orange-500);
+      font-weight: 500;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    
+    .hero-desc {
+      font-size: 18px;
+      color: var(--gray-500);
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+    
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    /* Orbit Animation */
+    .orbit-container {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      margin: 0 auto;
+    }
+    
+    .orbit-ring {
+      position: absolute;
+      border: 1px solid var(--gray-100);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.7s;
+    }
+    
+    .orbit-ring.active { 
+      border-color: #FDBA74;
+      border-width: 2px;
+    }
+    
+    .orbit-ring:nth-child(1) { width: 140px; height: 140px; }
+    .orbit-ring:nth-child(2) { width: 230px; height: 230px; }
+    .orbit-ring:nth-child(3) { width: 320px; height: 320px; }
+    
+    .orbit-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 112px;
+      height: 112px;
+      background: linear-gradient(135deg, #FB923C, var(--amber-500));
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(255, 107, 53, 0.25);
+      z-index: 10;
+    }
+    
+    .orbit-core span:first-child {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    
+    .orbit-core span:last-child {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    
+    /* Orbit Elements */
+    .orbit-element {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      transition: all 0.6s ease-out;
+      opacity: 0;
+    }
+    
+    .orbit-element.visible {
+      opacity: 1;
+    }
+    
+    /* Fruits */
+    .fruit-svg {
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
+    
+    .fruit-svg.orange {
+      filter: drop-shadow(0 4px 12px rgba(255, 112, 67, 0.5));
+      animation: fruitGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes fruitGlow {
+      0%, 100% { filter: drop-shadow(0 4px 12px rgba(255, 112, 67, 0.5)); }
+      50% { filter: drop-shadow(0 6px 20px rgba(255, 112, 67, 0.7)); }
+    }
+    
+    /* Progress Dots */
+    .orbit-progress {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .progress-dot:hover { transform: scale(1.2); }
+    
+    .progress-dot.active { transform: scale(1.5); }
+    .progress-dot.stage-0.active { background: #9CCC65; }
+    .progress-dot.stage-1.active { background: #7CB342; }
+    .progress-dot.stage-2.active { background: #558B2F; }
+    .progress-dot.stage-3.active { background: linear-gradient(135deg, #FFA726, #FF7043); }
+    
+    .scroll-indicator {
+      display: flex;
+      justify-content: center;
+      margin-top: 48px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    /* Pain Points */
+    .pain-points {
+      padding: 80px 24px;
+      background: var(--gray-50);
+    }
+    
+    .section-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .section-tag {
+      text-align: center;
+      color: var(--orange-500);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .section-desc {
+      text-align: center;
+      color: var(--gray-500);
+      margin-bottom: 48px;
+    }
+    
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    
+    .pain-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid var(--gray-100);
+      transition: all 0.3s;
+    }
+    
+    .pain-card:hover {
+      border-color: #FDBA74;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    
+    .pain-icon {
+      width: 48px;
+      height: 48px;
+      background: #FFF7ED;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .pain-icon svg {
+      width: 22px;
+      height: 22px;
+      color: var(--orange-500);
+    }
+
+    /* Stats */
+    .stats {
+      padding: 80px 24px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: clamp(36px, 5vw, 48px);
+      font-weight: 700;
+    }
+    
+    .stat-number span {
+      font-size: 24px;
+    }
+    
+    .stat-label {
+      color: var(--gray-500);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    /* Feature Section */
+    .feature {
+      padding: 100px 24px;
+      background: var(--gray-50);
+    }
+    
+    .feature-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    
+    @media (max-width: 900px) {
+      .feature-inner { grid-template-columns: 1fr; }
+    }
+    
+    .feature-text h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    
+    .feature-text p {
+      color: var(--gray-500);
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+    
+    .tone-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    
+    .tone-tag {
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 14px;
+    }
+    
+    .tone-tag.outline {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      color: var(--gray-600);
+    }
+    
+    .tone-tag.filled {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      color: #fff;
+    }
+    
+    .feature-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--orange-500);
+      font-weight: 500;
+      text-decoration: none;
+      transition: gap 0.3s;
+    }
+    
+    .feature-link:hover { gap: 12px; }
+
+    /* UI Preview */
+    .ui-preview {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border: 1px solid var(--gray-100);
+    }
+    
+    .ui-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .ui-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+    
+    .ui-header-title {
+      font-weight: 700;
+    }
+    
+    .ui-progress {
+      padding: 16px 24px;
+    }
+    
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .progress-step {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    
+    .progress-step.active {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      color: #fff;
+      font-weight: 700;
+    }
+    
+    .progress-step.inactive {
+      background: var(--gray-100);
+      color: var(--gray-400);
+    }
+    
+    .progress-line {
+      flex: 1;
+      height: 2px;
+      background: var(--gray-200);
+    }
+    
+    .progress-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    
+    .ui-card {
+      margin: 0 24px 16px;
+      padding: 16px;
+      background: var(--gray-50);
+      border-radius: 16px;
+    }
+    
+    .ui-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+    
+    .ui-card-header svg {
+      width: 16px;
+      height: 16px;
+      color: var(--orange-500);
+    }
+    
+    .region-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .region-tag {
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 14px;
+    }
+    
+    .region-tag.active {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      color: #fff;
+    }
+    
+    .region-tag.inactive {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      color: var(--gray-600);
+    }
+    
+    .weather-info {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+    
+    .weather-info strong {
+      color: var(--orange-500);
+      font-weight: 500;
+    }
+    
+    .chat-bubble {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .chat-avatar svg {
+      width: 14px;
+      height: 14px;
+      color: #fff;
+    }
+    
+    .chat-content {
+      flex: 1;
+    }
+    
+    .chat-label {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-bottom: 4px;
+    }
+    
+    .chat-message {
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border-top-left-radius: 0;
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    
+    .chat-user {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+    
+    .chat-user-message {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 16px;
+      border-top-right-radius: 0;
+      font-size: 14px;
+    }
+    
+    .ui-preview-card {
+      margin: 0 24px 24px;
+      padding: 16px;
+      background: #FFF7ED;
+      border-radius: 16px;
+      border: 1px solid #FDBA74;
+    }
+    
+    .ui-buttons {
+      padding: 0 24px 24px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .ui-btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .ui-btn.prev {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      color: var(--gray-500);
+    }
+    
+    .ui-btn.next {
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      border: none;
+      color: #fff;
+    }
+
+    /* Other Services */
+    .services {
+      padding: 80px 24px;
+    }
+    
+    .services-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    
+    .service-card {
+      background: var(--gray-50);
+      padding: 32px;
+      border-radius: 24px;
+      transition: box-shadow 0.3s;
+    }
+    
+    .service-card:hover {
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .service-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--orange-500), var(--amber-500));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    
+    .service-icon svg {
+      width: 26px;
+      height: 26px;
+      color: #fff;
+    }
+    
+    .service-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .service-card > p {
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+    
+    .service-features {
+      list-style: none;
+    }
+    
+    .service-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+    
+    .service-features svg {
+      width: 16px;
+      height: 16px;
+      color: #FDBA74;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      padding: 120px 24px;
+      background: #fff;
+    }
+    
+    .final-cta-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .final-cta h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 32px;
+    }
+    
+    .final-cta > p {
+      font-size: 20px;
+      color: var(--gray-500);
+      margin-bottom: 48px;
+    }
+    
+    .letter-preview {
+      max-width: 400px;
+      margin: 0 auto 40px;
+    }
+    
+    .letter-box {
+      padding: 24px;
+      border-radius: 16px;
+      text-align: left;
+    }
+    
+    .letter-box.input {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-100);
+    }
+    
+    .letter-box.output {
+      background: #FFF7ED;
+      border: 1px solid #FDBA74;
+    }
+    
+    .letter-label {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .letter-box.input .letter-label { color: var(--gray-400); }
+    .letter-box.output .letter-label { color: var(--orange-500); }
+    
+    .letter-box p:last-child {
+      line-height: 1.8;
+    }
+    
+    .letter-box.input p:last-child {
+      font-size: 18px;
+      color: var(--gray-800);
+    }
+    
+    .letter-box.output p:last-child {
+      color: var(--gray-700);
+    }
+    
+    .letter-arrow {
+      display: flex;
+      justify-content: center;
+      padding: 16px 0;
+      color: #FDBA74;
+    }
+    
+    .letter-arrow svg {
+      transform: rotate(90deg);
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 24px;
+      background: var(--gray-900);
+      color: var(--gray-400);
+    }
+    
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+    
+    .footer-links a {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover { color: #fff; }
+    
+    .footer-bottom {
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--gray-800);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .stats-grid { grid-template-columns: 1fr; gap: 32px; }
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50/30">
-  
-  <!-- Header -->
-  <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-400 flex items-center justify-center">
-          <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-        </div>
-        <span class="text-xl font-bold gradient-text">To-orange</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <button class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <i data-lucide="bell" class="w-5 h-5 text-gray-600"></i>
-          <span class="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
-        </button>
-        <div class="flex items-center gap-2">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-            <i data-lucide="user" class="w-4 h-4 text-orange-600"></i>
-          </div>
-          <span class="text-sm font-medium text-gray-700">김민지님</span>
-        </div>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <span class="logo gradient-text">To-orange</span>
+      <ul class="nav-links">
+        <li><a href="#">서비스 소개</a></li>
+        <li><a href="#">이용요금</a></li>
+        <li><a href="#">고객센터</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="#" class="login">로그인</a>
+        <button class="btn-primary start" style="padding: 8px 16px; font-size: 14px;">시작하기</button>
       </div>
     </div>
-  </header>
+  </nav>
 
-  <main class="max-w-6xl mx-auto px-6 py-6 pb-24">
-    
-    <!-- 변호사 메시지 알림 -->
-    <div class="mb-6 bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl p-4 text-white shadow-lg shadow-orange-200">
-      <div class="flex items-start gap-3">
-        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-          <i data-lucide="message-circle" class="w-5 h-5"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">새 메시지</span>
-            <span class="text-xs opacity-80">오늘 오전 10:32</span>
-          </div>
-          <p class="font-medium">박준영 변호사님의 메시지가 도착했습니다</p>
-          <p class="text-sm opacity-90 mt-1 truncate">"다음 주 공판준비기일 관련하여 확인하실 서류가 있습니다..."</p>
-        </div>
-        <button class="flex items-center gap-1 bg-white text-orange-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-orange-50 transition-colors flex-shrink-0">
-          확인하기
-          <i data-lucide="chevron-right" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- 메인 그리드 -->
-    <div class="grid grid-cols-12 gap-5">
-      
-      <!-- Life Orbit 캘린더 게이지 -->
-      <div class="col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-            <i data-lucide="calendar" class="w-4 h-4 text-orange-500"></i>
-            Life Orbit
-          </h3>
-          <span class="text-xs text-gray-500">D-23</span>
-        </div>
-        
-        <!-- 궤도 애니메이션 -->
-        <div id="orbit-container" class="relative w-48 h-48 mx-auto mb-4">
-          <div class="absolute inset-0 rounded-full border-2 border-dashed border-orange-200"></div>
-          <div class="absolute inset-4 rounded-full border-2 border-orange-300/50"></div>
-          <div class="absolute inset-8 rounded-full border-2 border-orange-400/30"></div>
-          
-          <div class="absolute inset-12 rounded-full bg-gradient-to-br from-orange-500 to-orange-400 flex items-center justify-center shadow-lg shadow-orange-200">
-            <div class="text-center text-white">
-              <div class="text-2xl font-bold">67%</div>
-              <div class="text-xs opacity-80">진행률</div>
-            </div>
-          </div>
-
-          <div id="orbit-1" class="orbit-item absolute w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-sm border border-orange-100">
-            <i data-lucide="mail" class="w-4 h-4 text-orange-500"></i>
-          </div>
-          <div id="orbit-2" class="orbit-item absolute w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-sm border border-orange-100">
-            <i data-lucide="message-circle" class="w-4 h-4 text-green-500"></i>
-          </div>
-          <div id="orbit-3" class="orbit-item absolute w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-sm border border-orange-100">
-            <i data-lucide="users" class="w-4 h-4 text-blue-500"></i>
-          </div>
-          <div id="orbit-4" class="orbit-item absolute w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-sm border border-orange-100">
-            <i data-lucide="scale" class="w-4 h-4 text-purple-500"></i>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex justify-between text-xs text-gray-500">
-            <span>이번 달 활동</span>
-            <span>67% 완료</span>
-          </div>
-          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style="width: 67%"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 사건 진행 현황 -->
-      <div class="col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-            <i data-lucide="file-text" class="w-4 h-4 text-orange-500"></i>
-            사건 진행 현황
-          </h3>
-          <button class="text-xs text-orange-600 hover:text-orange-700 flex items-center gap-1">
-            상세보기 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-          </button>
-        </div>
-
-        <div class="relative mb-6">
-          <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200"></div>
-          <div class="absolute top-4 left-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-400" style="width: 45%"></div>
-          
-          <div class="relative flex justify-between">
-            <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-gradient-to-br from-orange-500 to-orange-400 text-white">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-              </div>
-              <span class="mt-2 text-xs text-gray-500">접수완료</span>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-gradient-to-br from-orange-500 to-orange-400 text-white">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-              </div>
-              <span class="mt-2 text-xs text-gray-500">검토중</span>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-white border-2 border-orange-500 text-orange-500">
-                <i data-lucide="circle" class="w-4 h-4 fill-current"></i>
-              </div>
-              <button onclick="showTermPopup()" class="mt-2 text-xs text-orange-600 font-medium border-b border-dashed border-orange-300 cursor-help">공판준비기일</button>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400">
-                <i data-lucide="circle" class="w-4 h-4"></i>
-              </div>
-              <span class="mt-2 text-xs text-gray-500">재판진행</span>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400">
-                <i data-lucide="circle" class="w-4 h-4"></i>
-              </div>
-              <span class="mt-2 text-xs text-gray-500">판결</span>
-            </div>
-          </div>
-        </div>
-
-        <div id="term-popup" class="hidden bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4 relative">
-          <button onclick="hideTermPopup()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-          <div class="flex items-start gap-3">
-            <i data-lucide="help-circle" class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5"></i>
-            <div>
-              <p class="font-medium text-orange-800 mb-1">공판준비기일</p>
-              <p class="text-sm text-orange-700">재판 전 쟁점을 정리하고 증거를 확인하는 날</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 rounded-xl p-4">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-400 rounded-xl flex flex-col items-center justify-center text-white">
-              <span class="text-xs">12월</span>
-              <span class="text-lg font-bold leading-none">17</span>
-            </div>
-            <div class="flex-1">
-              <p class="font-medium text-gray-800">공판준비기일</p>
-              <p class="text-sm text-gray-500">서울중앙지방법원 제305호</p>
-            </div>
-            <div class="text-right">
-              <span class="text-orange-600 font-semibold">D-23</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 편지함 현황 -->
-      <div class="col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-            <i data-lucide="heart" class="w-4 h-4 text-orange-500"></i>
-            마음 전하기
-          </h3>
-          <button class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-400 rounded-lg flex items-center justify-center text-white shadow-sm hover:shadow-md transition-shadow">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
-            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <i data-lucide="mail" class="w-5 h-5 text-orange-500"></i>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm font-medium text-gray-800">받은 편지</p>
-              <p class="text-xs text-gray-500">새 편지 2통</p>
-            </div>
-            <span class="text-xl font-bold text-orange-600">12</span>
-          </div>
-
-          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <i data-lucide="send" class="w-5 h-5 text-gray-500"></i>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm font-medium text-gray-800">보낸 편지</p>
-              <p class="text-xs text-gray-500">검토중 1통</p>
-            </div>
-            <span class="text-xl font-bold text-gray-600">8</span>
-          </div>
-
-          <div class="flex gap-2 pt-2">
-            <span class="flex-1 text-center py-2 bg-green-50 text-green-600 rounded-lg text-xs">접수 5</span>
-            <span class="flex-1 text-center py-2 bg-orange-50 text-orange-600 rounded-lg text-xs">검토 1</span>
-            <span class="flex-1 text-center py-2 bg-gray-100 text-gray-500 rounded-lg text-xs">완료 6</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 포인트 내역 -->
-      <div class="col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-            <i data-lucide="coins" class="w-4 h-4 text-orange-500"></i>
-            나의 포인트
-          </h3>
-          <button class="text-xs text-orange-600 hover:text-orange-700">충전하기</button>
-        </div>
-
-        <div class="text-center mb-4 pb-4 border-b border-gray-100">
-          <p class="text-3xl font-bold gradient-text">11,500</p>
-          <p class="text-xs text-gray-500 mt-1">사용 가능 포인트</p>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex items-center gap-3 py-2">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-green-100">
-              <i data-lucide="plus" class="w-3 h-3 text-green-600"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-gray-700 truncate">편지 발송 적립</p>
-              <p class="text-xs text-gray-400">오늘</p>
-            </div>
-            <span class="text-sm font-medium text-gray-700">+500</span>
-          </div>
-          <div class="flex items-center gap-3 py-2">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-orange-100">
-              <i data-lucide="coins" class="w-3 h-3 text-orange-600"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-gray-700 truncate">포인트 충전</p>
-              <p class="text-xs text-gray-400">11.20</p>
-            </div>
-            <span class="text-sm font-medium text-gray-700">+10,000</span>
-          </div>
-          <div class="flex items-center gap-3 py-2">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-green-100">
-              <i data-lucide="plus" class="w-3 h-3 text-green-600"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-gray-700 truncate">첫 가입 보너스</p>
-              <p class="text-xs text-gray-400">11.18</p>
-            </div>
-            <span class="text-sm font-medium text-gray-700">+3,000</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 고민 털어놓기 -->
-      <div class="col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-            <i data-lucide="message-circle" class="w-4 h-4 text-orange-500"></i>
-            고민 털어놓기
-          </h3>
-          <span class="text-xs text-gray-400">익명 상담</span>
-        </div>
-
-        <div class="relative mb-4">
-          <input type="text" placeholder="오늘의 고민을 나눠보세요..." class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 pr-12">
-          <button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-400 rounded-lg flex items-center justify-center text-white">
-            <i data-lucide="send" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div class="space-y-3">
-          <div class="p-3 bg-gray-50 rounded-xl">
-            <p class="text-sm text-gray-700 line-clamp-2 mb-2">면회가 자꾸 취소되어서 너무 힘들어요...</p>
-            <div class="flex items-center justify-between text-xs text-gray-400">
-              <span>2시간 전</span>
-              <span class="flex items-center gap-1">
-                <i data-lucide="message-circle" class="w-3 h-3"></i> 답변 3
-              </span>
-            </div>
-          </div>
-          <div class="p-3 bg-gray-50 rounded-xl">
-            <p class="text-sm text-gray-700 line-clamp-2 mb-2">아이에게 어떻게 설명해야 할지...</p>
-            <div class="flex items-center justify-between text-xs text-gray-400">
-              <span>어제</span>
-              <span class="flex items-center gap-1">
-                <i data-lucide="message-circle" class="w-3 h-3"></i> 답변 7
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <!-- SOS 플로팅 버튼 -->
-  <button onclick="showSosModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-red-200 hover:scale-105 transition-transform z-50">
-    <i data-lucide="phone" class="w-6 h-6"></i>
-  </button>
-
-  <!-- SOS 모달 -->
-  <div id="sos-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl p-6 max-w-sm w-full">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i data-lucide="phone" class="w-8 h-8 text-white"></i>
-        </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">24시간 상담센터</h3>
-        <p class="text-gray-500 text-sm">언제든 연락주세요. 함께 해결해 드립니다.</p>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-tag">수감 전부터 사회복귀까지, 180일의 여정</p>
+      <h1>예상치 못한 법적 문제,<br><span class="gradient-text">그 이후의 모든 과정을 함께합니다</span></h1>
+      <p class="hero-desc">일정 하나를 등록하면, 준비해야 할 모든 것이 자동으로 안내됩니다.<br>당신과 가족은 더 이상 혼자가 아닙니다.</p>
+      <div class="hero-btns">
+        <button class="btn-primary">무료로 시작하기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        <button class="btn-secondary">서비스 둘러보기</button>
       </div>
       
-      <div class="space-y-3 mb-6">
-        <button class="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-400 text-white rounded-xl font-medium flex items-center justify-center gap-2">
-          <i data-lucide="phone" class="w-5 h-5"></i>
-          전화 상담 연결
-        </button>
-        <button class="w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-medium flex items-center justify-center gap-2">
-          <i data-lucide="message-circle" class="w-5 h-5"></i>
-          채팅 상담 시작
-        </button>
+      <!-- Orbit with Leaves & Fruits -->
+      <div class="orbit-container" id="orbit-container">
+        <div class="orbit-ring" id="ring-0"></div>
+        <div class="orbit-ring" id="ring-1"></div>
+        <div class="orbit-ring" id="ring-2"></div>
+        <div class="orbit-core">
+          <span>현재 단계</span>
+          <span id="stage-name">형사조사</span>
+        </div>
+        <!-- Elements will be generated by JS -->
       </div>
-
-      <button onclick="hideSosModal()" class="w-full py-3 text-gray-500 text-sm">닫기</button>
+      <div class="orbit-progress">
+        <button class="progress-dot stage-0 active" data-stage="0"></button>
+        <button class="progress-dot stage-1" data-stage="1"></button>
+        <button class="progress-dot stage-2" data-stage="2"></button>
+        <button class="progress-dot stage-3" data-stage="3"></button>
+      </div>
+      
+      <div class="scroll-indicator">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Pain Points -->
+  <section class="pain-points">
+    <div class="section-inner">
+      <p class="section-tag">공감합니다</p>
+      <h2 class="section-title">지금 이런 고민을 하고 계신가요?</h2>
+      <p class="section-desc">처음 겪는 상황, 어디서부터 시작해야 할지 막막하셨죠.</p>
+      <div class="pain-grid">
+        <div class="pain-card">
+          <div class="pain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
+          <span>어떤 서류를 준비해야 할지 모르겠어요</span>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <span>변호사와 언제, 어떻게 소통해야 할까요</span>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <span>가족으로서 무엇을 도울 수 있을까요</span>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <span>출소 후 계획은 어떻게 세워야 하나요</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="section-inner">
+      <p class="section-tag">함께하는 분들</p>
+      <h2 class="section-title">이미 많은 가족들이 함께하고 있습니다</h2>
+      <div class="stats-grid" style="margin-top: 48px;">
+        <div class="stat-item">
+          <div class="stat-number gradient-text">2,847<span>명</span></div>
+          <p class="stat-label">함께하는 가족</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number gradient-text">12,453<span>통</span></div>
+          <p class="stat-label">전달된 마음</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number gradient-text">94<span>%</span></div>
+          <p class="stat-label">평균 만족도</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Section -->
+  <section class="feature">
+    <div class="feature-inner">
+      <div class="feature-text">
+        <p class="section-tag" style="text-align: left;">마음전하기</p>
+        <h2>톤만 선택하면<br>편지가 완성됩니다</h2>
+        <p>수감자가 계신 지역의 날씨, 계절 인사까지 자동으로 반영됩니다. 어떤 마음을 전하고 싶은지 선택만 하세요.</p>
+        <div class="tone-tags">
+          <span class="tone-tag outline">#따뜻하게 안부 전하기</span>
+          <span class="tone-tag filled">#담담하게 상황 이야기</span>
+          <span class="tone-tag outline">#걱정되는 마음 전하기</span>
+        </div>
+        <a href="#" class="feature-link">편지 쓰러가기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      
+      <div class="ui-preview">
+        <div class="ui-header">
+          <div class="ui-header-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            돌아가기
+          </div>
+          <span class="ui-header-title">편지 쓰기</span>
+          <div style="width: 64px;"></div>
+        </div>
+        <div class="ui-progress">
+          <div class="progress-steps">
+            <div class="progress-step active">1</div>
+            <div class="progress-line"></div>
+            <div class="progress-step inactive">2</div>
+            <div class="progress-line"></div>
+            <div class="progress-step inactive">3</div>
+            <div class="progress-line"></div>
+            <div class="progress-step inactive">4</div>
+          </div>
+          <p class="progress-label">STEP 1 : 편지의 시작(서론)을 만들어볼게요</p>
+        </div>
+        <div class="ui-card">
+          <div class="ui-card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            수감자가 계신 지역
+          </div>
+          <div class="region-tags">
+            <span class="region-tag inactive">서울</span>
+            <span class="region-tag active">부산</span>
+            <span class="region-tag inactive">대구</span>
+            <span class="region-tag inactive">인천</span>
+            <span class="region-tag inactive">광주</span>
+            <span class="region-tag inactive">대전</span>
+          </div>
+          <p class="weather-info"><strong>부산 날씨:</strong> 흐림, 영하 3도, 눈 예보</p>
+        </div>
+        <div class="ui-card">
+          <div class="chat-bubble">
+            <div class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 4.5H18l-3.75 2.7 1.5 4.5L12 12l-3.75 2.7 1.5-4.5L6 7.5h4.5z"/></svg></div>
+            <div class="chat-content">
+              <p class="chat-label">AI 도우미</p>
+              <div class="chat-message">안녕하세요! 편지 쓰기를 도와드릴게요.<br>먼저 수감자가 계신 지역을 선택해주세요.</div>
+            </div>
+          </div>
+          <div class="chat-user">
+            <span class="chat-user-message">#담담하게 상황 이야기</span>
+          </div>
+          <div class="chat-bubble">
+            <div class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 4.5H18l-3.75 2.7 1.5 4.5L12 12l-3.75 2.7 1.5-4.5L6 7.5h4.5z"/></svg></div>
+            <div class="chat-content">
+              <p class="chat-label">AI 도우미</p>
+              <div class="chat-message">좋아요! 이 톤으로 시작하면 자연스럽겠네요.<br>더 추가하고 싶은 감정이 있나요?</div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-preview-card">
+          <div class="ui-card-header" style="margin-bottom: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            서론 미리보기
+          </div>
+          <p style="font-size: 14px; color: var(--gray-600);">부산은 요즘 날씨가 많이 춥습니다.</p>
+        </div>
+        <div class="ui-buttons">
+          <button class="ui-btn prev">이전</button>
+          <button class="ui-btn next">다음 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Other Services -->
+  <section class="services">
+    <div class="services-inner">
+      <p class="section-tag">더 많은 기능</p>
+      <h2 class="section-title">180일의 여정을 함께합니다</h2>
+      <div class="services-grid" style="margin-top: 48px;">
+        <div class="service-card">
+          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <h3>Life Orbit 캘린더</h3>
+          <p>일정 하나로 23개 체크포인트가 자동 생성됩니다</p>
+          <ul class="service-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 수사부터 재사회화까지 전 과정 관리</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 자동 리마인더 알림</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <h3>법률도우미</h3>
+          <p>변호사와 함께하는 180일 동행 시스템</p>
+          <ul class="service-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 편지 사전 검토 서비스</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 실시간 사건 진행 현황</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="final-cta-inner">
+      <p class="section-tag">편지, 어렵게 생각하지 마세요</p>
+      <h2>마음만 전해주세요.<br><span class="gradient-text">편지는 저희가 완성할게요.</span></h2>
+      <p>한 줄이면 충분해요.</p>
+      
+      <div class="letter-preview">
+        <div class="letter-box input">
+          <p class="letter-label">전하고 싶은 마음</p>
+          <p>"보고싶어, 건강하게 잘 지내고 있어"</p>
+        </div>
+        <div class="letter-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="letter-box output">
+          <p class="letter-label">완성된 편지</p>
+          <p>"많이 보고 싶었어요. 매일 건강히 잘 지내고 있으니 걱정하지 마세요. 곧 다시 만날 날을 기다리며..."</p>
+        </div>
+      </div>
+      
+      <button class="btn-primary" style="padding: 20px 48px; font-size: 18px;">첫 편지 쓰러가기 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <span class="logo gradient-text">To-orange</span>
+        <div class="footer-links">
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">고객센터</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2024 To-orange. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
   <script>
-    // Lucide 아이콘 초기화
-    lucide.createIcons();
-
-    // 궤도 애니메이션
-    let rotation = 0;
-    const orbitItems = [
-      { id: 'orbit-1', r: 90, offset: 0 },
-      { id: 'orbit-2', r: 80, offset: 90 },
-      { id: 'orbit-3', r: 90, offset: 180 },
-      { id: 'orbit-4', r: 75, offset: 270 }
+    const stages = ['형사조사', '수감 전 준비', '수감 중 생활', '재사회화'];
+    let currentStage = 0;
+    const container = document.getElementById('orbit-container');
+    const dots = document.querySelectorAll('.progress-dot');
+    
+    const ringRadii = [70, 115, 160];
+    
+    // 다양한 잎사귀 타입
+    const leafTypes = [
+      { w: 24, h: 32, colors: ['#7CB342', '#558B2F'] },
+      { w: 18, h: 26, colors: ['#8BC34A', '#689F38'] },
+      { w: 12, h: 18, colors: ['#9CCC65', '#7CB342'] },
+      { w: 20, h: 28, colors: ['#689F38', '#33691E'] },
+      { w: 14, h: 20, colors: ['#AED581', '#8BC34A'] },
+      { w: 10, h: 14, colors: ['#C5E1A5', '#9CCC65'] },
+      { w: 22, h: 30, colors: ['#66BB6A', '#43A047'] },
+      { w: 16, h: 24, colors: ['#81C784', '#66BB6A'] },
     ];
-
-    function animateOrbit() {
-      rotation = (rotation + 0.3) % 360;
-      orbitItems.forEach(item => {
-        const el = document.getElementById(item.id);
-        const angle = (rotation + item.offset) * Math.PI / 180;
-        const x = Math.cos(angle) * item.r;
-        const y = Math.sin(angle) * item.r;
-        el.style.left = `calc(50% + ${x}px - 16px)`;
-        el.style.top = `calc(50% + ${y}px - 16px)`;
+    
+    // 궤도 위 잎사귀 배치
+    const leafElements = [
+      { ring: 0, angle: 15, type: 2, rot: -30 },
+      { ring: 0, angle: 75, type: 5, rot: 45 },
+      { ring: 0, angle: 140, type: 1, rot: -15 },
+      { ring: 0, angle: 200, type: 4, rot: 60 },
+      { ring: 0, angle: 260, type: 0, rot: -45 },
+      { ring: 0, angle: 320, type: 3, rot: 25 },
+      { ring: 1, angle: 0, type: 0, rot: -20 },
+      { ring: 1, angle: 35, type: 5, rot: 70 },
+      { ring: 1, angle: 65, type: 2, rot: -55 },
+      { ring: 1, angle: 100, type: 6, rot: 15 },
+      { ring: 1, angle: 135, type: 4, rot: -40 },
+      { ring: 1, angle: 170, type: 1, rot: 50 },
+      { ring: 1, angle: 205, type: 7, rot: -10 },
+      { ring: 1, angle: 240, type: 3, rot: 35 },
+      { ring: 1, angle: 275, type: 5, rot: -65 },
+      { ring: 1, angle: 310, type: 2, rot: 20 },
+      { ring: 1, angle: 345, type: 6, rot: -35 },
+      { ring: 2, angle: 10, type: 0, rot: 40 },
+      { ring: 2, angle: 40, type: 3, rot: -25 },
+      { ring: 2, angle: 70, type: 7, rot: 55 },
+      { ring: 2, angle: 95, type: 2, rot: -70 },
+      { ring: 2, angle: 120, type: 5, rot: 10 },
+      { ring: 2, angle: 150, type: 1, rot: -50 },
+      { ring: 2, angle: 180, type: 4, rot: 30 },
+      { ring: 2, angle: 210, type: 6, rot: -15 },
+      { ring: 2, angle: 235, type: 0, rot: 65 },
+      { ring: 2, angle: 265, type: 3, rot: -40 },
+      { ring: 2, angle: 295, type: 7, rot: 25 },
+      { ring: 2, angle: 325, type: 2, rot: -60 },
+      { ring: 2, angle: 355, type: 5, rot: 45 },
+    ];
+    
+    // 열매 위치
+    const fruitElements = [
+      { ring: 0, angle: 45, size: 14 },
+      { ring: 0, angle: 180, size: 12 },
+      { ring: 1, angle: 20, size: 18 },
+      { ring: 1, angle: 120, size: 20 },
+      { ring: 1, angle: 220, size: 16 },
+      { ring: 1, angle: 300, size: 14 },
+      { ring: 2, angle: 60, size: 24 },
+      { ring: 2, angle: 150, size: 22 },
+      { ring: 2, angle: 240, size: 26 },
+      { ring: 2, angle: 330, size: 20 },
+    ];
+    
+    function createLeafSVG(type, rot) {
+      const t = leafTypes[type];
+      const id = Math.random().toString(36).substr(2, 9);
+      return `
+        <svg width="${t.w}" height="${t.h}" viewBox="0 0 24 32" style="transform: rotate(${rot}deg)">
+          <defs>
+            <linearGradient id="lg-${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${t.colors[0]}" />
+              <stop offset="100%" stop-color="${t.colors[1]}" />
+            </linearGradient>
+          </defs>
+          <path d="M12 0 C6 8 0 16 4 24 C8 32 16 32 20 24 C24 16 18 8 12 0" fill="url(#lg-${id})" />
+          <path d="M12 4 L12 28" stroke="${t.colors[1]}" stroke-width="0.8" fill="none" opacity="0.5" />
+          <path d="M12 10 L7 14 M12 16 L6 21 M12 10 L17 14 M12 16 L18 21" stroke="${t.colors[1]}" stroke-width="0.5" fill="none" opacity="0.35" />
+        </svg>
+      `;
+    }
+    
+    function createFruitSVG(size, isOrange) {
+      const id = Math.random().toString(36).substr(2, 9);
+      const colors = isOrange ? ['#FFCC80', '#FF7043'] : ['#C5E1A5', '#7CB342'];
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 26 26" class="fruit-svg ${isOrange ? 'orange' : ''}">
+          <defs>
+            <radialGradient id="fg-${id}" cx="30%" cy="30%">
+              <stop offset="0%" stop-color="${colors[0]}" />
+              <stop offset="100%" stop-color="${colors[1]}" />
+            </radialGradient>
+          </defs>
+          <circle cx="13" cy="13" r="12" fill="url(#fg-${id})" />
+          ${isOrange ? '<ellipse cx="8" cy="8" rx="3" ry="2" fill="rgba(255,255,255,0.3)" />' : ''}
+        </svg>
+      `;
+    }
+    
+    function createElements() {
+      // 잎사귀 생성
+      leafElements.forEach((el, i) => {
+        const div = document.createElement('div');
+        div.className = 'orbit-element leaf-el';
+        div.dataset.index = i;
+        div.dataset.ring = el.ring;
+        
+        const radius = ringRadii[el.ring];
+        const angleRad = (el.angle - 90) * (Math.PI / 180);
+        const x = 190 + Math.cos(angleRad) * radius;
+        const y = 190 + Math.sin(angleRad) * radius;
+        
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        div.innerHTML = createLeafSVG(el.type, el.rot);
+        
+        container.appendChild(div);
       });
-      requestAnimationFrame(animateOrbit);
+      
+      // 열매 생성
+      fruitElements.forEach((el, i) => {
+        const div = document.createElement('div');
+        div.className = 'orbit-element fruit-el';
+        div.dataset.index = i;
+        div.dataset.ring = el.ring;
+        div.dataset.size = el.size;
+        
+        const radius = ringRadii[el.ring];
+        const angleRad = (el.angle - 90) * (Math.PI / 180);
+        const x = 190 + Math.cos(angleRad) * radius;
+        const y = 190 + Math.sin(angleRad) * radius;
+        
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        
+        container.appendChild(div);
+      });
     }
-    animateOrbit();
-
-    // 용어 팝업
-    function showTermPopup() {
-      document.getElementById('term-popup').classList.remove('hidden');
+    
+    function updateOrbit(stage) {
+      const leaves = document.querySelectorAll('.leaf-el');
+      const fruits = document.querySelectorAll('.fruit-el');
+      
+      // 잎사귀 업데이트
+      leaves.forEach((el, i) => {
+        const ring = parseInt(el.dataset.ring);
+        let visible = false;
+        
+        if (stage === 0 && i < 6) visible = true;
+        else if (stage === 1 && i < 17) visible = true;
+        else if (stage >= 2) visible = true;
+        
+        setTimeout(() => {
+          el.classList.toggle('visible', visible);
+        }, i * 30);
+      });
+      
+      // 열매 업데이트
+      fruits.forEach((el, i) => {
+        const size = parseInt(el.dataset.size);
+        let visible = false;
+        let isOrange = false;
+        let fruitSize = size * 0.5;
+        
+        if (stage === 1 && i < 2) { visible = true; fruitSize = size * 0.5; }
+        else if (stage === 2 && i < 6) { visible = true; fruitSize = size * 0.7; }
+        else if (stage === 3) { visible = true; fruitSize = size; isOrange = true; }
+        
+        setTimeout(() => {
+          el.classList.toggle('visible', visible);
+          if (visible) {
+            el.innerHTML = createFruitSVG(fruitSize, isOrange);
+          }
+        }, 200 + i * 50);
+      });
+      
+      // 궤도 링 활성화
+      [0, 1, 2].forEach(ring => {
+        const ringEl = document.getElementById(`ring-${ring}`);
+        ringEl.classList.toggle('active', ring <= stage);
+      });
+      
+      document.getElementById('stage-name').textContent = stages[stage];
+      
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === stage);
+      });
     }
-    function hideTermPopup() {
-      document.getElementById('term-popup').classList.add('hidden');
+    
+    function nextStage() {
+      currentStage = (currentStage + 1) % 4;
+      updateOrbit(currentStage);
     }
-
-    // SOS 모달
-    function showSosModal() {
-      document.getElementById('sos-modal').classList.remove('hidden');
-    }
-    function hideSosModal() {
-      document.getElementById('sos-modal').classList.add('hidden');
-    }
+    
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        currentStage = parseInt(dot.dataset.stage);
+        updateOrbit(currentStage);
+      });
+    });
+    
+    createElements();
+    updateOrbit(0);
+    setInterval(nextStage, 4000);
   </script>
 </body>
 </html>
